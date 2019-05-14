@@ -7,7 +7,7 @@
 
 <script>
   import styled from 'vue-styled-components';
-  import SampleDemoEngine from '~/middleware/physicEngine/SampleDemo';
+  import SimpleDemoEngine from '~/middleware/physicEngine/SimpleDemo';
 
   const StyledTitle = styled('h1')`
     position: relative;
@@ -69,7 +69,7 @@
       }
     },
     mounted() {
-      this.physicEngine = new SampleDemoEngine(this.$refs.physicBody.$el);
+      this.physicEngine = new SimpleDemoEngine(this.$refs.physicBody.$el);
       this.physicEngine.run();
       window.physicEngine = this.physicEngine;
       document.addEventListener('keyup', this.keyboardEvents);

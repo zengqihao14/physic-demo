@@ -8,7 +8,7 @@ import {
   Bodies
 } from 'matter-js';
 
-export default class SampleDemoEngine {
+export default class SimpleDemoEngine {
   constructor(bodyEl, options) {
     this.body = this.getBody(bodyEl);
     this.init();
