@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "cross-env": "^5.2.0",
+    "matter-js": "^0.14.2",
     "nuxt": "^2.4.0"
   },
   "devDependencies": {
