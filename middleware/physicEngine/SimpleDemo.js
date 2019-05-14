@@ -8,6 +8,12 @@ import {
   Bodies
 } from 'matter-js';
 
+import {
+  DEFAULT_OPTIONS,
+  DEFAULT_WALL_OPTIONS,
+  DEFAULT_BODY_STYLE
+} from '~/constant';
+
 export default class SimpleDemoEngine {
   constructor(bodyEl, options) {
     this.body = this.getBody(bodyEl);
@@ -31,11 +37,10 @@ export default class SimpleDemoEngine {
     this.render = Render.create({
       element: this.body.el,
       engine: this.engine,
-      options: {
+      options: Object.assign(DEFAULT_OPTIONS, {
         width: this.body.X,
-        height: this.body.Y,
-        showVelocity: true
-      }
+        height: this.body.Y
+      })
     });
 
     // create runner
@@ -62,17 +67,19 @@ export default class SimpleDemoEngine {
 
   createWall = () => {
     World.add(this.world, [
-      Bodies.rectangle(this.body.X / 2, 0, this.body.X, 50, { isStatic: true }),
-      Bodies.rectangle(this.body.X / 2, this.body.Y, this.body.X, 50, { isStatic: true }),
-      Bodies.rectangle(this.body.X, this.body.Y / 2, 50, this.body.Y, { isStatic: true }),
-      Bodies.rectangle(0, this.body.Y / 2, 50, this.body.Y, { isStatic: true })
+      Bodies.rectangle(this.body.X / 2, 0, this.body.X, 30, DEFAULT_WALL_OPTIONS),
+      Bodies.rectangle(this.body.X / 2, this.body.Y, this.body.X, 30, DEFAULT_WALL_OPTIONS),
+      Bodies.rectangle(this.body.X, this.body.Y / 2, 30, this.body.Y, DEFAULT_WALL_OPTIONS),
+      Bodies.rectangle(0, this.body.Y / 2, 30, this.body.Y, DEFAULT_WALL_OPTIONS)
     ]);
   };
 
   createSolid = () => {
     const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
     World.add(this.world, [
-      Bodies.rectangle(positionX, 60, 60, 60),
+      Bodies.rectangle(positionX, 60, 60, 60, {
+        render: DEFAULT_BODY_STYLE.RENDER
+      }),
     ]);
 
   };
