@@ -2,6 +2,7 @@ import {
   Engine,
   Render,
   Runner,
+  Events,
   MouseConstraint,
   Mouse,
   World,
@@ -9,13 +10,14 @@ import {
 } from 'matter-js';
 
 import {
-  DEFAULT_OPTIONS,
+  DEFAULT_ENGINE_OPTIONS,
+  DEFAULT_RENDER_OPTIONS,
   DEFAULT_WALL_OPTIONS,
   DEFAULT_BODY_STYLE
 } from '~/constant';
 
 export default class SimpleDemoEngine {
-  constructor(bodyEl, options) {
+  constructor(bodyEl) {
     this.body = this.getBody(bodyEl);
     this.init();
   }
@@ -28,7 +30,7 @@ export default class SimpleDemoEngine {
 
   init = () => {
     // create engine
-    this.engine = Engine.create();
+    this.engine = Engine.create(DEFAULT_ENGINE_OPTIONS);
 
     // create world
     this.world = this.engine.world;
@@ -37,7 +39,7 @@ export default class SimpleDemoEngine {
     this.render = Render.create({
       element: this.body.el,
       engine: this.engine,
-      options: Object.assign(DEFAULT_OPTIONS, {
+      options: Object.assign(DEFAULT_RENDER_OPTIONS, {
         width: this.body.X,
         height: this.body.Y
       })
@@ -61,8 +63,48 @@ export default class SimpleDemoEngine {
     // keep the mouse in sync with rendering
     this.render.mouse = this.mouse;
     World.add(this.world, this.mouseConstraint);
+    this.bindEvents();
     this.createWall();
     this.createSolid();
+  };
+
+  bindEvents = () => {
+    Events.on(this.engine, 'collisionStart', (event) => {
+      const pairs = event.pairs;
+      for (let i = 0, j = pairs.length; i != j; ++i) {
+        const pair = pairs[i];
+        if (pair.bodyA.label === 'solidBox') {
+          pair.bodyA.render.strokeStyle = '#d65b5b';
+        }
+        if (pair.bodyB.label === 'solidBox') {
+          pair.bodyB.render.strokeStyle = '#d65b5b';
+        }
+      }
+    });
+
+    Events.on(this.engine, 'collisionEnd', (event) => {
+      const pairs = event.pairs;
+      for (let i = 0, j = pairs.length; i != j; ++i) {
+        const pair = pairs[i];
+        if (pair.bodyA.label === 'solidBox') {
+          pair.bodyA.render.strokeStyle = DEFAULT_BODY_STYLE.RENDER.strokeStyle;
+        }
+        if (pair.bodyB.label === 'solidBox') {
+          pair.bodyB.render.strokeStyle = DEFAULT_BODY_STYLE.RENDER.strokeStyle;
+        }
+      }
+    });
+
+    Events.on(this.mouseConstraint, 'startdrag mousedown touchstart', (event) => {
+      if (event.body && event.body.label === 'solidBox') {
+        event.body.render.fillStyle = '#FFF';
+      }
+    });
+    Events.on(this.mouseConstraint, 'enddrag mouseup touchend', (event) => {
+      if (event.body && event.body.label === 'solidBox') {
+        event.body.render.fillStyle = DEFAULT_BODY_STYLE.RENDER.fillStyle;
+      }
+    });
   };
 
   createWall = () => {
@@ -76,12 +118,11 @@ export default class SimpleDemoEngine {
 
   createSolid = () => {
     const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
-    World.add(this.world, [
-      Bodies.rectangle(positionX, 60, 60, 60, {
-        render: DEFAULT_BODY_STYLE.RENDER
-      }),
-    ]);
-
+    const solid = Bodies.rectangle(positionX, 60, 60, 60, {
+      label: 'solidBox',
+      render: DEFAULT_BODY_STYLE.RENDER
+    });
+    World.add(this.world, [ solid ]);
   };
 
   run = () => {

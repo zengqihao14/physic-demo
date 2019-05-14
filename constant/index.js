@@ -1,11 +1,17 @@
-export const DEFAULT_OPTIONS = {
+export const DEFAULT_ENGINE_OPTIONS = {
+  enableSleeping: true
+};
+
+export const DEFAULT_RENDER_OPTIONS = {
   wireframes: false,
   background: '#FDF9F3',
-  showVelocity: true
+  showVelocity: true,
+  showAngleIndicator: true
 };
 
 export const DEFAULT_WALL_OPTIONS = {
   isStatic: true,
+  label: 'boundaryWall',
   render: {
     fillStyle: '#dbdbdb',
     strokeStyle: '#FFF',
