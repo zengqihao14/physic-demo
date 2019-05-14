@@ -7,7 +7,6 @@
 
 <script>
   import styled from 'vue-styled-components';
-  import ReturnBtn from '~/components/common/ReturnButton';
 
   const StyledTitle = styled('h1')`
     position: relative;
@@ -34,8 +33,7 @@
     transition: 'slide-left',
     components: {
       StyledTitle,
-      StyledContainer,
-      ReturnBtn
+      StyledContainer
     }
   }
 </script>

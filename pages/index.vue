@@ -8,7 +8,7 @@
 
   const StyleTitle = styled('h1')`
     position: relative;
-    width: 100%;
+    width: auto;
     margin: 16px auto;
     font-size: 32px;
     font-weight: 600;
