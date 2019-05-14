@@ -6,7 +6,10 @@ export const DEFAULT_RENDER_OPTIONS = {
   wireframes: false,
   background: '#FDF9F3',
   showVelocity: true,
-  showAngleIndicator: true
+  showAngleIndicator: true,
+  showCollisions: true,
+  showIds: true,
+  showPositions: true
 };
 
 export const DEFAULT_WALL_OPTIONS = {
