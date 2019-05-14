@@ -1,7 +1,7 @@
 <template lang="pug">
   styled-menu
-    styled-menu-link(to="/") Main
-    styled-menu-link(to="/simpleDemo") Simple-Demo
+    styled-menu-link(to="") Main
+    styled-menu-link(to="simpleDemo") Simple-Demo
 </template>
 
 <script>
@@ -31,7 +31,6 @@
     text-align: ledt;
     text-decoration: none;
     width: 100%;
-
     &:hover {
       transition: color .48s ease;
       color: rgba(220, 100, 0, 1);
@@ -42,7 +41,8 @@
     name: 'GlobalSideBar',
     components: {
       StyledMenu,
-      StyledMenuLink
+      StyledMenuLink,
+      NLink
     }
   }
 </script>

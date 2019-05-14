@@ -2,11 +2,12 @@
   section.container.transition-container
     styled-title Simple-Demo
     styled-container
-    return-btn
+      styled-content(ref="physicBody")
 </template>
 
 <script>
   import styled from 'vue-styled-components';
+  import SampleDemoEngine from '~/middleware/physicEngine/SampleDemo';
 
   const StyledTitle = styled('h1')`
     position: relative;
@@ -21,19 +22,60 @@
     position: relative;
     display: block;
     margin: 32px auto;
+    padding: 16px;
     width: 100%;
     max-width: 820px;
     height: 600px;
     border: 1px solid rgba(0, 0, 0, .15);
     border-radius: 3px;
+    overflow: hidden;
+  `;
+
+  const StyledContent = styled.div`
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
   `;
 
   export default {
     name: 'SimpleDemo',
     transition: 'slide-left',
+    data() {
+      return {
+        physicEngine: null
+      }
+    },
     components: {
       StyledTitle,
-      StyledContainer
+      StyledContainer,
+      StyledContent
+    },
+    methods: {
+      keyboardEvents(ev) {
+        const { key } = ev;
+        if (key === 'c') {
+          this.physicEngine.createSolid();
+        }
+        if (key === 'r') {
+          this.physicEngine.run();
+        }
+        if (key === 'R') {
+          this.physicEngine.reset();
+        }
+        if (key === 's') {
+          this.physicEngine.stop();
+        }
+      }
+    },
+    mounted() {
+      this.physicEngine = new SampleDemoEngine(this.$refs.physicBody.$el);
+      this.physicEngine.run();
+      window.physicEngine = this.physicEngine;
+      document.addEventListener('keyup', this.keyboardEvents);
+    },
+    beforeDestroy() {
+      document.removeEventListener('keyup', this.keyboardEvents);
     }
   }
 </script>
