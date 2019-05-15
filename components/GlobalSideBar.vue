@@ -1,7 +1,8 @@
 <template lang="pug">
   styled-menu
-    styled-menu-link(to="/") Main
-    styled-menu-link(to="/simpleDemo") Simple-Demo
+    a(href="/") Main
+    a(href="/simpleDemo") Simple-Demo
+    a(href="/carDemo") Car-Demo
 </template>
 
 <script>

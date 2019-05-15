@@ -20,6 +20,11 @@ export const BODIES_CONFIG = {
   solidBox: {
     width: 60,
     height: 60,
+    density: 100,
+    mass: 40,
+    friction: 0.00001,
+    firctionStatic: 0.00001,
+    frictionAir: 0.0001,
     options: {
       label: 'solidBox',
       render: {
@@ -35,6 +40,11 @@ export const BODIES_CONFIG = {
   },
   solidCircle: {
     radius: 30,
+    density: 0.3,
+    mass: 20,
+    friction: 0.00001,
+    firctionStatic: 0.00001,
+    frictionAir: 0.0001,
     options: {
       label: 'solidCircle',
       render: {
