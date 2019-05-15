@@ -169,6 +169,10 @@ export default class SimpleDemoEngine {
     World.add(this.world, [ circle ]);
   };
 
+  randomCreate = () => {
+    Math.floor(Math.random()*2) ? this.createSolidBox() : this.createSolidCircle();
+  };
+
   run = () => {
     Render.run(this.render);
     Runner.run(this.runner, this.engine);

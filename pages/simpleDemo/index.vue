@@ -55,10 +55,7 @@
       keyboardEvents(ev) {
         const { key } = ev;
         if (key === 'c') {
-          this.physicEngine.createSolidBox();
-        }
-        if (key === 'C') {
-          this.physicEngine.createSolidCircle();
+          this.physicEngine.randomCreate();
         }
         if (key === 'r') {
           this.physicEngine.run();
