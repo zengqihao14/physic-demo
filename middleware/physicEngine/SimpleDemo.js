@@ -13,9 +13,8 @@ import {
   DEFAULT_ENGINE_OPTIONS,
   DEFAULT_RENDER_OPTIONS,
   DEFAULT_DEBUG_RENDER_OPTIONS,
-  DEFAULT_WALL_OPTIONS,
-  DEFAULT_SOLID_BOX_STYLE,
-  DEFAULT_SOLID_CIRCLE_STYLE
+  COLLISION_BODIES,
+  BODIES_CONFIG
 } from '~/constant';
 
 export default class SimpleDemoEngine {
@@ -88,10 +87,10 @@ export default class SimpleDemoEngine {
       const pairs = event.pairs;
       for (let i = 0, j = pairs.length; i != j; ++i) {
         const pair = pairs[i];
-        if (['solidBox', 'solidCircle'].includes(pair.bodyA.label)) {
+        if (COLLISION_BODIES.includes(pair.bodyA.label)) {
           pair.bodyA.render.strokeStyle = '#d65b5b';
         }
-        if (['solidBox', 'solidCircle'].includes(pair.bodyB.label)) {
+        if (COLLISION_BODIES.includes(pair.bodyB.label)) {
           pair.bodyB.render.strokeStyle = '#d65b5b';
         }
       }
@@ -101,67 +100,73 @@ export default class SimpleDemoEngine {
       const pairs = event.pairs;
       for (let i = 0, j = pairs.length; i != j; ++i) {
         const pair = pairs[i];
-        if (['solidBox', 'solidCircle'].includes(pair.bodyA.label)) {
-          if (pair.bodyA.label === 'solidBox') {
-            pair.bodyA.render.strokeStyle = DEFAULT_SOLID_BOX_STYLE.RENDER.strokeStyle;
-          }
-          if (pair.bodyA.label === 'solidCircle') {
-            pair.bodyA.render.strokeStyle = DEFAULT_SOLID_CIRCLE_STYLE.RENDER.strokeStyle;
-          }
+        if (COLLISION_BODIES.includes(pair.bodyA.label)) {
+          pair.bodyA.render.strokeStyle = BODIES_CONFIG[pair.bodyA.label].options.render.strokeStyle;
         }
-        if (['solidBox', 'solidCircle'].includes(pair.bodyB.label)) {
-          if (pair.bodyB.label === 'solidBox') {
-            pair.bodyB.render.strokeStyle = DEFAULT_SOLID_BOX_STYLE.RENDER.strokeStyle;
-          }
-          if (pair.bodyB.label === 'solidCircle') {
-            pair.bodyB.render.strokeStyle = DEFAULT_SOLID_CIRCLE_STYLE.RENDER.strokeStyle;
-          }
+        if (COLLISION_BODIES.includes(pair.bodyB.label)) {
+          pair.bodyB.render.strokeStyle = BODIES_CONFIG[pair.bodyB.label].options.render.strokeStyle;
         }
       }
     });
 
     Events.on(this.mouseConstraint, 'startdrag mousedown touchstart', (event) => {
-      if (event.body && ['solidBox', 'solidCircle'].includes(event.body.label)) {
+      if (event.body && COLLISION_BODIES.includes(event.body.label)) {
         event.body.render.fillStyle = '#FFF';
       }
     });
     Events.on(this.mouseConstraint, 'enddrag mouseup touchend', (event) => {
-      if (event.body && event.body.label === 'solidBox') {
-        event.body.render.fillStyle = DEFAULT_SOLID_BOX_STYLE.RENDER.fillStyle;
-      }
-      if (event.body && event.body.label === 'solidCircle') {
-        event.body.render.fillStyle = DEFAULT_SOLID_CIRCLE_STYLE.RENDER.fillStyle;
+      if (event.body && COLLISION_BODIES.includes(event.body.label)) {
+        event.body.render.strokeStyle = BODIES_CONFIG[event.body.label].options.render.strokeStyle;
       }
     });
   };
 
   createWall = () => {
     World.add(this.world, [
-      Bodies.rectangle(this.body.X / 2, 0, this.body.X, 30, DEFAULT_WALL_OPTIONS), // top
-      Bodies.rectangle(this.body.X / 2, this.body.Y, this.body.X, 30, DEFAULT_WALL_OPTIONS), // bottom
-      Bodies.rectangle(this.body.X, this.body.Y / 2, 30, this.body.Y, DEFAULT_WALL_OPTIONS), // right
-      Bodies.rectangle(0, this.body.Y / 2, 30, this.body.Y, DEFAULT_WALL_OPTIONS) // left
+      // top
+      Bodies.rectangle(
+        this.body.X / 2, 0,
+        this.body.X, BODIES_CONFIG.boundaryWall.width,
+        BODIES_CONFIG.boundaryWall.options
+      ),
+      // bottom
+      Bodies.rectangle(
+        this.body.X / 2, this.body.Y,
+        this.body.X, BODIES_CONFIG.boundaryWall.width,
+        BODIES_CONFIG.boundaryWall.options
+      ),
+      // right
+      Bodies.rectangle(
+        this.body.X, this.body.Y / 2,
+        BODIES_CONFIG.boundaryWall.width, this.body.Y,
+        BODIES_CONFIG.boundaryWall.options
+      ),
+      // left
+      Bodies.rectangle(
+        0, this.body.Y / 2,
+        BODIES_CONFIG.boundaryWall.width, this.body.Y,
+        BODIES_CONFIG.boundaryWall.options
+      )
     ]);
   };
 
   createSolidBox = () => {
     const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
-    const solid = Bodies.rectangle(positionX, 60, 60, 60, {
-      label: 'solidBox',
-      render: DEFAULT_SOLID_BOX_STYLE.RENDER,
-      collisionFilter: DEFAULT_SOLID_BOX_STYLE.COLLISION_FILTER
-    });
-    World.add(this.world, [ solid ]);
+    const box = Bodies.rectangle(
+      positionX, 60,
+      BODIES_CONFIG.solidBox.width, BODIES_CONFIG.solidBox.height,
+      BODIES_CONFIG.solidBox.options
+    );
+    World.add(this.world, [ box ]);
   };
 
   createSolidCircle = () => {
     const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
-    const solid = Bodies.circle(positionX, 60, 30, {
-      label: 'solidCircle',
-      render: DEFAULT_SOLID_CIRCLE_STYLE.RENDER,
-      collisionFilter: DEFAULT_SOLID_CIRCLE_STYLE.COLLISION_FILTER
-    });
-    World.add(this.world, [ solid ]);
+    const circle = Bodies.circle(
+      positionX, 60, BODIES_CONFIG.solidCircle.radius,
+      BODIES_CONFIG.solidCircle.options
+    );
+    World.add(this.world, [ circle ]);
   };
 
   run = () => {
