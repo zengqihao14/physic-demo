@@ -43,7 +43,7 @@
     transition: 'slide-left',
     data() {
       return {
-        physicEngine: null
+        physicEngine: null,
       }
     },
     components: {
@@ -70,16 +70,31 @@
           this.physicEngine.toggleDebugMode();
         }
         if (key === 'ArrowRight' || key === 'ArrowLeft') {
-          this.physicEngine.carRelease();
+          this.physicEngine.carHorizontalRelease();
+        }
+        if (key === 'ArrowUp' || key === 'ArrowDown') {
+          this.physicEngine.carVerticalRelease();
+        }
+        if (code === 'Space') {
+          this.physicEngine.carJumpRelease();
         }
       },
       keyboardDownEvents(ev) {
-        const { key } = ev;
+        const { key, code } = ev;
         if (key === 'ArrowRight') {
           this.physicEngine.carGoForward();
         }
         if (key === 'ArrowLeft') {
           this.physicEngine.carGoBackward();
+        }
+        if (key === 'ArrowUp') {
+          this.physicEngine.carGoUp();
+        }
+        if (key === 'ArrowDown') {
+          this.physicEngine.carGoDown();
+        }
+        if (code === 'Space') {
+          this.physicEngine.carJump();
         }
       }
     },

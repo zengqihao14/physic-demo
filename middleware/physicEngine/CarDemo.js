@@ -18,16 +18,19 @@ import {
 } from '~/constant';
 import {
   COLLISION_BODIES,
-  BODIES_CONFIG
+  BODIES_CONFIG,
+  FORCE_LIMIT
 } from '~/constant/car';
 
 export default class CarDemoEngine {
   constructor(bodyEl) {
     this.body = this.getBody(bodyEl);
     this.state = {
-      debug: false
+      debug: false,
+      force: 0
     };
-    this.car = null;
+    this.carBody = null;
+    this.carCircle = null;
     this.init();
   }
 
@@ -205,33 +208,55 @@ export default class CarDemoEngine {
       pointA: { x: 0, y: 0 },
       bodyB: carBody,
       pointB: { x: -(BODIES_CONFIG.carBody.width / 2 - 5), y: 0 },
-      stiffness: 1,
+      stiffness: 0,
       length: 0,
-      damping: 1
+      damping: 0
     });
     const constraintB = Constraint.create({
       bodyA: carCircleB,
       pointA: { x: 0, y: 0 },
       bodyB: carBody,
       pointB: { x: BODIES_CONFIG.carBody.width / 2 - 5, y: 0 },
-      stiffness: 1,
+      stiffness: 0,
       length: 0,
-      damping: 1
+      damping: 0
     });
-    this.car = carBody;
+    this.carBody = carBody;
+    this.carCircle = carCircleB;
     World.add(this.world, [ carCircleA, carCircleB, carBody, constraintA, constraintB ]);
   };
 
   carGoForward = () => {
-    this.car.force.x = 0.1;
+
+    this.carBody.force.x = Math.min(this.carBody.force.x + 0.002, FORCE_LIMIT);
   };
 
   carGoBackward = () => {
-    this.car.force.x = -0.1;
+    this.carBody.force.x = Math.min(this.carBody.force.x - 0.002, FORCE_LIMIT);
   };
 
-  carRelease = () => {
-    this.car.force.x = 0;
+  carGoUp = () => {
+    this.carCircle.vertices[0].body.force.y = Math.min(this.carCircle.vertices[0].body.force.y - 0.002, FORCE_LIMIT);
+  };
+
+  carGoDown = () => {
+    this.carCircle.vertices[0].body.force.y = Math.min(this.carCircle.vertices[0].body.force.y + 0.002, FORCE_LIMIT);
+  };
+
+  carJump = () => {
+    this.carBody.force.y= - 0.03;
+  };
+
+  carHorizontalRelease = () => {
+    this.carBody.force.x = 0;
+  };
+
+  carVerticalRelease = () => {
+    this.carCircle.force.y = 0;
+  };
+
+  carJumpRelease = () => {
+    this.carBody.force.y = 0;
   };
 
   run = () => {

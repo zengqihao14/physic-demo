@@ -62,8 +62,8 @@ export const BODIES_CONFIG = {
     radius: 20,
     options: {
       label: 'carCircle',
-      density: 0.8,
-      mass: 40,
+      density: 0.1,
+      mass: 0.1,
       friction: 0.00001,
       firctionStatic: 0.00001,
       frictionAir: 0.0005,
@@ -79,3 +79,5 @@ export const BODIES_CONFIG = {
     }
   }
 };
+
+export const FORCE_LIMIT = 20;
