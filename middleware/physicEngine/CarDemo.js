@@ -6,7 +6,8 @@ import {
   MouseConstraint,
   Mouse,
   World,
-  Bodies
+  Bodies,
+  Constraint
 } from 'matter-js';
 
 import {
@@ -18,9 +19,9 @@ import {
 import {
   COLLISION_BODIES,
   BODIES_CONFIG
-} from '~/constant/simple';
+} from '~/constant/car';
 
-export default class SimpleDemoEngine {
+export default class CarDemoEngine {
   constructor(bodyEl) {
     this.body = this.getBody(bodyEl);
     this.state = {
@@ -73,7 +74,7 @@ export default class SimpleDemoEngine {
       },
       collisionFilter: {
         category: 2,
-        mask: 3
+        mask: 4 | 5
       }
     });
 
@@ -82,8 +83,8 @@ export default class SimpleDemoEngine {
     World.add(this.world, this.mouseConstraint);
     this.bindEvents();
     this.createWall();
-    this.createSolidBox();
-    this.createSolidCircle();
+    this.createFloor();
+    this.createCar();
   };
 
   bindEvents = () => {
@@ -154,27 +155,69 @@ export default class SimpleDemoEngine {
     ]);
   };
 
-  createSolidBox = () => {
-    const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
-    const box = Bodies.rectangle(
-      positionX, 60,
-      BODIES_CONFIG.solidBox.width, BODIES_CONFIG.solidBox.height,
-      BODIES_CONFIG.solidBox.options
-    );
-    World.add(this.world, [ box ]);
+  createFloor = () => {
+    World.add(this.world, [
+      // top
+      Bodies.rectangle(
+        (this.body.X - 300) / 2, 120,
+        this.body.X, BODIES_CONFIG.floor.width,
+        Object.assign(BODIES_CONFIG.floor.options, {
+          friction: 1,
+          frictionStatic: 0.1,
+          angle: Math.PI * 0.06
+        })
+      ),
+      // center
+      Bodies.rectangle(
+        (this.body.X + 250) / 2, 370,
+        this.body.X, BODIES_CONFIG.floor.width,
+        Object.assign(BODIES_CONFIG.floor.options, {
+          friction: 0.6,
+          frictionStatic: 0.6,
+          angle: Math.PI * -0.06
+        })
+      )
+    ]);
   };
 
-  createSolidCircle = () => {
-    const positionX = Math.min(Math.max(Math.random() * this.body.X, 30), this.body.X - 30);
-    const circle = Bodies.circle(
-      positionX, 60, BODIES_CONFIG.solidCircle.radius,
-      BODIES_CONFIG.solidCircle.options
-    );
-    World.add(this.world, [ circle ]);
-  };
+  createCar = () => {
+    // const car = Composites.car(40, 20, BODIES_CONFIG.car.width, BODIES_CONFIG.car.height, BODIES_CONFIG.car.wheelSize);
+    // console.log(car)
 
-  randomCreate = () => {
-    Math.floor(Math.random()*2) ? this.createSolidBox() : this.createSolidCircle();
+    const carBody = Bodies.rectangle(
+      50, 20,
+      BODIES_CONFIG.carBody.width, BODIES_CONFIG.carBody.height,
+      BODIES_CONFIG.carBody.options
+    );
+    const carCircleA = Bodies.circle(
+      40, 20,
+      BODIES_CONFIG.carCircle.radius,
+      BODIES_CONFIG.carCircle.options
+    );
+    const carCircleB = Bodies.circle(
+      100, 20,
+      BODIES_CONFIG.carCircle.radius,
+      BODIES_CONFIG.carCircle.options
+    );
+    const constraintA = Constraint.create({
+      bodyA: carCircleA,
+      pointA: { x: 0, y: 0 },
+      bodyB: carBody,
+      pointB: { x: -(BODIES_CONFIG.carBody.width / 2 - 5), y: 0 },
+      stiffness: 1,
+      length: 0,
+      damping: 1
+    });
+    const constraintB = Constraint.create({
+      bodyA: carCircleB,
+      pointA: { x: 0, y: 0 },
+      bodyB: carBody,
+      pointB: { x: BODIES_CONFIG.carBody.width / 2 - 5, y: 0 },
+      stiffness: 1,
+      length: 0,
+      damping: 1
+    });
+    World.add(this.world, [ carCircleA, carCircleB, carBody, constraintA, constraintB ]);
   };
 
   run = () => {
@@ -195,6 +238,7 @@ export default class SimpleDemoEngine {
   reset = () => {
     this.world.bodies = [];
     this.createWall();
+    this.createFloor();
   };
 
   toggleDebugMode = () => {
