@@ -261,6 +261,7 @@ export default class CarDemoEngine {
   carJump = () => {
     if (this.carBody) {
       this.carBody.force.y = -0.06;
+      setTimeout(this.carJumpRelease, 100);
     }
   };
 

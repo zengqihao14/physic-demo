@@ -53,7 +53,7 @@
     },
     methods: {
       keyboardUpEvents(ev) {
-        const { key } = ev;
+        const { key, code } = ev;
         if (key === 'c') {
           this.physicEngine.createCar();
         }
@@ -76,7 +76,7 @@
           this.physicEngine.carVerticalRelease();
         }
         if (code === 'Space') {
-          this.physicEngine.carJumpRelease();
+          this.physicEngine.carJump();
         }
       },
       keyboardDownEvents(ev) {
@@ -92,9 +92,6 @@
         }
         if (key === 'ArrowDown') {
           this.physicEngine.carGoDown();
-        }
-        if (code === 'Space') {
-          this.physicEngine.carJump();
         }
       }
     },
