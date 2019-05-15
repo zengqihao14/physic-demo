@@ -52,7 +52,7 @@
       StyledContent
     },
     methods: {
-      keyboardEvents(ev) {
+      keyboardUpEvents(ev) {
         const { key } = ev;
         if (key === 'c') {
           this.physicEngine.createCar();
@@ -69,16 +69,30 @@
         if (key === 'd') {
           this.physicEngine.toggleDebugMode();
         }
+        if (key === 'ArrowRight' || key === 'ArrowLeft') {
+          this.physicEngine.carRelease();
+        }
+      },
+      keyboardDownEvents(ev) {
+        const { key } = ev;
+        if (key === 'ArrowRight') {
+          this.physicEngine.carGoForward();
+        }
+        if (key === 'ArrowLeft') {
+          this.physicEngine.carGoBackward();
+        }
       }
     },
     mounted() {
       this.physicEngine = new CarDemoEngine(this.$refs.physicBody.$el);
       this.physicEngine.run();
       window.physicEngine = this.physicEngine;
-      document.addEventListener('keyup', this.keyboardEvents);
+      document.addEventListener('keyup', this.keyboardUpEvents);
+      document.addEventListener('keydown', this.keyboardDownEvents);
     },
     beforeDestroy() {
       document.removeEventListener('keyup', this.keyboardEvents);
+      document.removeEventListener('keydown', this.keyboardDownEvents);
     }
   }
 </script>

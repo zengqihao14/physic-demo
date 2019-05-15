@@ -27,6 +27,7 @@ export default class CarDemoEngine {
     this.state = {
       debug: false
     };
+    this.car = null;
     this.init();
   }
 
@@ -217,7 +218,20 @@ export default class CarDemoEngine {
       length: 0,
       damping: 1
     });
+    this.car = carBody;
     World.add(this.world, [ carCircleA, carCircleB, carBody, constraintA, constraintB ]);
+  };
+
+  carGoForward = () => {
+    this.car.force.x = 0.1;
+  };
+
+  carGoBackward = () => {
+    this.car.force.x = -0.1;
+  };
+
+  carRelease = () => {
+    this.car.force.x = 0;
   };
 
   run = () => {
