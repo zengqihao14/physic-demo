@@ -30,7 +30,10 @@ export const BODIES_CONFIG = {
       render: {
         fillStyle: '#66b2b2',
         strokeStyle: 'transparent',
-        lineWidth: 1
+        lineWidth: 1,
+        sprite: {
+          texture: '/texture/haimianbaobao.png'
+        }
       },
       collisionFilter: {
         category: 3,
@@ -50,7 +53,10 @@ export const BODIES_CONFIG = {
       render: {
         fillStyle: '#ffcccc',
         strokeStyle: 'transparent',
-        lineWidth: 1
+        lineWidth: 1,
+        sprite: {
+          texture: '/texture/huaji.png'
+        }
       },
       collisionFilter: {
         category: 4,

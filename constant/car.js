@@ -62,15 +62,18 @@ export const BODIES_CONFIG = {
     radius: 20,
     options: {
       label: 'carCircle',
-      density: 0.1,
-      mass: 0.1,
-      friction: 0.00001,
-      firctionStatic: 0.00001,
+      density: 0.001,
+      mass: 1,
+      friction: 0.05,
+      firctionStatic: 0.01,
       frictionAir: 0.0005,
       render: {
         fillStyle: '#66b2b2',
         strokeStyle: 'transparent',
-        lineWidth: 1
+        lineWidth: 1,
+        sprite: {
+          texture: '/texture/huaji.png'
+        }
       },
       collisionFilter: {
         category: 4,

@@ -7,6 +7,7 @@ import {
   Mouse,
   World,
   Bodies,
+  Composite,
   Constraint
 } from 'matter-js';
 
@@ -30,7 +31,7 @@ export default class CarDemoEngine {
       force: 0
     };
     this.carBody = null;
-    this.carCircle = null;
+    this.carWhell = null;
     this.init();
   }
 
@@ -187,76 +188,98 @@ export default class CarDemoEngine {
   createCar = () => {
     // const car = Composites.car(40, 20, BODIES_CONFIG.car.width, BODIES_CONFIG.car.height, BODIES_CONFIG.car.wheelSize);
     // console.log(car)
+    const car = Composite.create({ label: 'Car' });
 
     const carBody = Bodies.rectangle(
       50, 20,
       BODIES_CONFIG.carBody.width, BODIES_CONFIG.carBody.height,
       BODIES_CONFIG.carBody.options
     );
-    const carCircleA = Bodies.circle(
+    const wheelA = Bodies.circle(
       40, 20,
       BODIES_CONFIG.carCircle.radius,
       BODIES_CONFIG.carCircle.options
     );
-    const carCircleB = Bodies.circle(
+    const wheelB = Bodies.circle(
       100, 20,
       BODIES_CONFIG.carCircle.radius,
       BODIES_CONFIG.carCircle.options
     );
-    const constraintA = Constraint.create({
-      bodyA: carCircleA,
-      pointA: { x: 0, y: 0 },
-      bodyB: carBody,
-      pointB: { x: -(BODIES_CONFIG.carBody.width / 2 - 5), y: 0 },
-      stiffness: 0,
-      length: 0,
-      damping: 0
+    const axelA = Constraint.create({
+      bodyB: wheelA,
+      pointB: { x: 0, y: 0 },
+      bodyA: carBody,
+      pointA: { x: -(BODIES_CONFIG.carBody.width / 2 - 5), y: 0 },
+      stiffness: 0.5,
+      length: 0
     });
-    const constraintB = Constraint.create({
-      bodyA: carCircleB,
-      pointA: { x: 0, y: 0 },
-      bodyB: carBody,
-      pointB: { x: BODIES_CONFIG.carBody.width / 2 - 5, y: 0 },
-      stiffness: 0,
-      length: 0,
-      damping: 0
+    const axelB = Constraint.create({
+      bodyB: wheelB,
+      pointB: { x: 0, y: 0 },
+      bodyA: carBody,
+      pointA: { x: BODIES_CONFIG.carBody.width / 2 - 5, y: 0 },
+      stiffness: 0.5,
+      length: 0
     });
+
+    Composite.addBody(car, carBody);
+    Composite.addBody(car, wheelA);
+    Composite.addBody(car, wheelB);
+    Composite.addConstraint(car, axelA);
+    Composite.addConstraint(car, axelB);
+
     this.carBody = carBody;
-    this.carCircle = carCircleB;
-    World.add(this.world, [ carCircleA, carCircleB, carBody, constraintA, constraintB ]);
+    this.carWhell = wheelB;
+
+    World.add(this.world, [ car ]);
   };
 
   carGoForward = () => {
-
-    this.carBody.force.x = Math.min(this.carBody.force.x + 0.002, FORCE_LIMIT);
+    if (this.carBody) {
+      this.carBody.force.x = Math.min(this.carBody.force.x + 0.003, FORCE_LIMIT);
+    }
   };
 
   carGoBackward = () => {
-    this.carBody.force.x = Math.min(this.carBody.force.x - 0.002, FORCE_LIMIT);
+    if (this.carBody) {
+      this.carBody.force.x = Math.min(this.carBody.force.x - 0.003, FORCE_LIMIT);
+    }
   };
 
   carGoUp = () => {
-    this.carCircle.vertices[0].body.force.y = Math.min(this.carCircle.vertices[0].body.force.y - 0.002, FORCE_LIMIT);
+    if (this.carWhell) {
+      this.carWhell.vertices[0].body.force.y = Math.min(this.carWhell.vertices[0].body.force.y - 0.004, FORCE_LIMIT);
+    }
   };
 
   carGoDown = () => {
-    this.carCircle.vertices[0].body.force.y = Math.min(this.carCircle.vertices[0].body.force.y + 0.002, FORCE_LIMIT);
+    if (this.carWhell) {
+      this.carWhell.vertices[0].body.force.y = Math.min(this.carWhell.vertices[0].body.force.y + 0.004, FORCE_LIMIT);
+    }
   };
 
   carJump = () => {
-    this.carBody.force.y= - 0.03;
+    if (this.carBody) {
+      this.carBody.force.y = -0.06;
+    }
   };
 
   carHorizontalRelease = () => {
-    this.carBody.force.x = 0;
+    if (this.carBody) {
+      this.carBody.force.x = 0;
+    }
   };
 
   carVerticalRelease = () => {
-    this.carCircle.force.y = 0;
+    if (this.carWhell) {
+      this.carWhell.force.y = 0;
+    }
   };
 
   carJumpRelease = () => {
-    this.carBody.force.y = 0;
+    if (this.carBody) {
+      this.carBody.force.y = 0;
+    }
   };
 
   run = () => {
@@ -275,7 +298,10 @@ export default class CarDemoEngine {
   };
 
   reset = () => {
+    this.carBody = null;
+    this.carWhell = null;
     this.world.bodies = [];
+    this.world.composites = [];
     this.createWall();
     this.createFloor();
   };

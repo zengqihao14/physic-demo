@@ -1,5 +1,8 @@
 export const DEFAULT_ENGINE_OPTIONS = {
-  enableSleeping: true
+  enableSleeping: true,
+  positionIterations: 10,
+  velocityIterations: 10,
+  constraintIterations: 5
 };
 
 export const DEFAULT_WORLD_OPTIONS = {
