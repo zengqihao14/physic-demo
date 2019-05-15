@@ -32,7 +32,9 @@ export const BODIES_CONFIG = {
         strokeStyle: 'transparent',
         lineWidth: 1,
         sprite: {
-          texture: '/texture/haimianbaobao.png'
+          texture: '/texture/haimianbaobao.png',
+          xScale: 0.9,
+          yScale: 0.9
         }
       },
       collisionFilter: {
@@ -55,7 +57,9 @@ export const BODIES_CONFIG = {
         strokeStyle: 'transparent',
         lineWidth: 1,
         sprite: {
-          texture: '/texture/huaji.png'
+          texture: '/texture/huaji.png',
+          xScale: 1.18,
+          yScale: 1.18
         }
       },
       collisionFilter: {
