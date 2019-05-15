@@ -55,7 +55,10 @@
       keyboardEvents(ev) {
         const { key } = ev;
         if (key === 'c') {
-          this.physicEngine.createSolid();
+          this.physicEngine.createSolidBox();
+        }
+        if (key === 'C') {
+          this.physicEngine.createSolidCircle();
         }
         if (key === 'r') {
           this.physicEngine.run();
@@ -65,6 +68,9 @@
         }
         if (key === 's') {
           this.physicEngine.stop();
+        }
+        if (key === 'd') {
+          this.physicEngine.toggleDebugMode();
         }
       }
     },

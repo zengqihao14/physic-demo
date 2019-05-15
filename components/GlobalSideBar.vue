@@ -1,7 +1,7 @@
 <template lang="pug">
   styled-menu
-    styled-menu-link(to="") Main
-    styled-menu-link(to="simpleDemo") Simple-Demo
+    styled-menu-link(to="/") Main
+    styled-menu-link(to="/simpleDemo") Simple-Demo
 </template>
 
 <script>
@@ -9,7 +9,7 @@
   import styled from 'vue-styled-components';
 
   const NLink = Vue.component('NLink');
-  const StyledMenu = styled.div`
+  const StyledMenu = styled.ul`
     position: relative;
     display: flex;
     flex-direction: column;
@@ -20,6 +20,11 @@
     width: 100%;
     height: 100%;
     border-right: 1px solid rgba(0, 0, 0, .15);
+  `;
+
+  const StyledMenuItem = styled.li`
+    position: relative;
+    width: 100%;
   `;
 
   const StyledMenuLink = styled(NLink)`
@@ -41,8 +46,8 @@
     name: 'GlobalSideBar',
     components: {
       StyledMenu,
-      StyledMenuLink,
-      NLink
+      StyledMenuItem,
+      StyledMenuLink
     }
   }
 </script>
